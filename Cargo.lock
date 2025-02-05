@@ -823,7 +823,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "rust-unbound-block"
+name = "rust-unbound-dns-block"
 version = "0.1.0"
 dependencies = [
  "reqwest",

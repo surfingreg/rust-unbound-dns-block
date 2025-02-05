@@ -1,9 +1,9 @@
 [package]
-name = "rust-unbound-block"
+name = "rust-unbound-dns-block"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
 tokio = {version="1", features=["full"]}
 reqwest = "0.12.12"
-#tldextract = "0.6.0"
+# tldextract = "0.6.0"

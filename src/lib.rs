@@ -10,36 +10,29 @@
 ///
 pub async fn top_domain_list(url:&str)-> Option<Vec<String>> {
 
+    // web request
     if let Ok(body) = reqwest::get(url).await {
+
+        // extract the web response as text
         if let Ok(text) = body.text().await {
-            //println!("body = {text:?}");
+
             let lines = text.split("\n");
 
-            //let lines:Vec<&str> =
             let mut domains:Vec<String> = lines
-
                 .filter(|l| !l.trim().starts_with("#"))
                 .filter(|l| l.trim().starts_with("0.0.0.0"))
                 .map(|l| {
                     // remove comments on the same line
-                    if let Some((not_comment, _)) = l.split_once("#") {
-                        not_comment.trim()
-                    } else {
-                        l
+                    match l.split_once("#") {
+                        Some((not_comment, _))=>not_comment.trim(),
+                        None => l
                     }
                 })
-                .filter_map(|l| {
-                    let l = l.split_ascii_whitespace();
-                    if let Some(l) = l.last() {
-                        Some(l.trim())
-                    }else{
-                        None
-                    }
-                })
+                // take the last contiguous string to be domain after whitespace after 0.0.0.0
+                .filter_map(|l| l.split_ascii_whitespace().last())
                 .filter_map(|subdomain|{
-
+                    // extract the top-level domain
                     // for now only use 2-part top-level domains. Ignore the others. TLDExtract is super slow.
-
                     let mut parts:Vec<&str> = subdomain.split(".").collect();
                     if parts.len() == 2 {
                         parts.reverse();
@@ -47,7 +40,6 @@ pub async fn top_domain_list(url:&str)-> Option<Vec<String>> {
                         parts.truncate(2);
                         parts.reverse();
                         parts.join(".");
-
                         Some(subdomain.to_string())
                     } else {
                         None
@@ -71,16 +63,27 @@ pub async fn top_domain_list(url:&str)-> Option<Vec<String>> {
 
             domains.sort();
 
-            for d in &domains {
-                println!("{d}");
-            }
             Some(domains)
-        } else {
-            None
-        }
+        } else { None }
     }
-    else {
-        None
+    else { None }
+}
+
+///
+/// print the domain list in Unbound a-records.conf format
+///
+/// local-zone: "facebook.com" redirect
+/// local-data: "facebook.com A 0.0.0.0"
+///
+pub fn print_unbound(domains:&Vec<String>){
+
+    for d in domains.iter(){
+
+        let line1 = format!("local-zone: \"{}\" redirect", d);
+        let line2 = format!("local-data: \"{} A 0.0.0.0\"", d);
+
+        println!("{}\n{}\n", line1, line2);
+
     }
 }
 
@@ -99,7 +102,15 @@ mod tests {
             .build()
             .unwrap()
             .block_on(async {
-                top_domain_list(url).await;
+                if let Some(domains) = top_domain_list(url).await {
+                    //for d in &domains {
+                    //    println!("{d}");
+                    //}
+                    print_unbound(&domains);
+                }
+
             })
     }
+
+
 }
