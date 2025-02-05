@@ -5,8 +5,17 @@
 //! or similar.
 //!
 
+use itertools::Itertools;
+
 ///
 /// vector of two-part top-level domains
+///
+/// Converts:
+///     0.0.0.0 appnexus.net
+/// to:
+///     local-zone: "appnexus.net" redirect
+///     local-data: "appnexus.net A 0.0.0.0"
+///
 ///
 pub async fn top_domain_list(url:&str)-> Option<Vec<String>> {
 
@@ -34,13 +43,14 @@ pub async fn top_domain_list(url:&str)-> Option<Vec<String>> {
                     // extract the top-level domain
                     // for now only use 2-part top-level domains. Ignore the others. TLDExtract is super slow.
                     let mut parts:Vec<&str> = subdomain.split(".").collect();
-                    if parts.len() == 2 {
+                    if parts.len() >= 2 {
                         parts.reverse();
                         // todo: use TLD if speed isn't a factor
                         parts.truncate(2);
+                        assert_eq!(2, parts.len());
                         parts.reverse();
-                        parts.join(".");
-                        Some(subdomain.to_string())
+                        let parts = parts.join(".");
+                        Some(parts)
                     } else {
                         None
                     }
@@ -59,14 +69,28 @@ pub async fn top_domain_list(url:&str)-> Option<Vec<String>> {
                     //}
 
                 })
+                .filter(|f|
+                    // account for the line "0.0.0.0 0.0.0.0" in the hosts file
+                    if f != "0.0" {
+                        true
+                    } else {false}
+                )
                 .collect();
 
             domains.sort();
+            let unique_domains = domains.into_iter().unique().collect();
 
-            Some(domains)
+            // TODO: remove duplicates, particularly due to having removed subdomains
+
+
+            Some(unique_domains)
         } else { None }
     }
     else { None }
+}
+
+pub fn top_level_domain_count(domains:&Vec<String>)->usize {
+    domains.len()
 }
 
 ///
@@ -107,6 +131,7 @@ mod tests {
                     //    println!("{d}");
                     //}
                     print_unbound(&domains);
+                    println!("unique top domains: {}", top_level_domain_count(&domains));
                 }
 
             })

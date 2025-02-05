@@ -1,7 +1,9 @@
 //!
 //! example
 //!
+//!
 
+/// main
 fn main() {
 
     //let allowed_top_domains = vec!["co", "azureedge", ];
@@ -12,11 +14,12 @@ fn main() {
         .build()
         .unwrap()
         .block_on(async {
-            if let Some(domains) = rust_unbound_block::top_domain_list(url).await {
+            if let Some(domains) = rust_unbound_dns_block::top_domain_list(url).await {
                 //for d in &domains {
                 //    println!("{d}");
                 //}
-                rust_unbound_block::print_unbound(&domains);
+                //println!("unique top domains: {}", top_level_domain_count(&domains));
+                rust_unbound_dns_block::print_unbound(&domains);
             }
 
         })

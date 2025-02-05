@@ -6,6 +6,10 @@ currently naive in that it only looks at 2-part top domains. So
 spamsite.co.uk will fall through the cracks. Same with badsite.azure.com.
 It would be easy and slow to enable the tldextract crate to do this properly.
 
+Top level domains as of 2/5/2025:  
+54308  
+(http://sbc.io/hosts/alternates/fakenews/hosts)
+
 ## usage
 > ./cargo_audit_fix.sh; cargo audit; cargo test; 
 

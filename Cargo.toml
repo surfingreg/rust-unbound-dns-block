@@ -7,3 +7,4 @@ edition = "2021"
 tokio = {version="1", features=["full"]}
 reqwest = "0.12.12"
 # tldextract = "0.6.0"
+itertools = "0.14.0"
