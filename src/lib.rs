@@ -39,6 +39,14 @@ pub async fn top_domain_list(url:&str)-> Option<Vec<String>> {
                 })
                 // take the last contiguous string to be domain after whitespace after 0.0.0.0
                 .filter_map(|l| l.split_ascii_whitespace().last())
+
+                /*
+
+                TODO: extract top level domains; but since my wife insists on using
+                 twitter, this won't fly for now--among other reasons.
+
+                */
+
                 .filter_map(|subdomain|{
                     // extract the top-level domain
                     // for now only use 2-part top-level domains. Ignore the others. TLDExtract is super slow.
@@ -46,8 +54,8 @@ pub async fn top_domain_list(url:&str)-> Option<Vec<String>> {
                     if parts.len() >= 2 {
                         parts.reverse();
                         // todo: use TLD if speed isn't a factor
-                        parts.truncate(2);
-                        assert_eq!(2, parts.len());
+                        //parts.truncate(2);
+                        //assert_eq!(2, parts.len());
                         parts.reverse();
                         let parts = parts.join(".");
                         Some(parts)
@@ -71,7 +79,7 @@ pub async fn top_domain_list(url:&str)-> Option<Vec<String>> {
                 })
                 .filter(|f|
                     // account for the line "0.0.0.0 0.0.0.0" in the hosts file
-                    if f != "0.0" {
+                    if *f != "0.0" {
                         true
                     } else {false}
                 )
