@@ -1,4 +1,4 @@
-# rust-unbound-block
+# rust-unbound-dns-block
 Convert @StevenBlack's hosts list to the unbound a-records.conf format.
 
 Unique subdomains as of 2/5/2025:  
