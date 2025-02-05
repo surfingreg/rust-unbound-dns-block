@@ -7,8 +7,8 @@ spamsite.co.uk will fall through the cracks. Same with badsite.azure.com.
 It would be easy and slow to enable the tldextract crate to do this properly.
 
 Unique subdomains as of 2/5/2025:  
-123569  
-(not sure why there's one more than unified+fakenews: http://sbc.io/hosts/alternates/fakenews/hosts)
+123568  
+(unified+fakenews: http://sbc.io/hosts/alternates/fakenews/hosts)
 
 ## usage
 > ./cargo_audit_fix.sh; cargo audit; cargo test; 

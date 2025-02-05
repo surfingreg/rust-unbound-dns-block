@@ -18,8 +18,8 @@ fn main() {
                 //for d in &domains {
                 //    println!("{d}");
                 //}
-                println!("unique top domains: {}", rust_unbound_dns_block::top_level_domain_count(&domains));
-                //rust_unbound_dns_block::print_unbound(&domains);
+                //println!("unique top domains: {}", rust_unbound_dns_block::top_level_domain_count(&domains));
+                rust_unbound_dns_block::print_unbound(&domains);
             }
 
         })
